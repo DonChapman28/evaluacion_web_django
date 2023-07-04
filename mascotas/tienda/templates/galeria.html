@@ -1,0 +1,35 @@
+{% extends 'base.html' %} 
+{% block contenido %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+<div class="container">
+    <div class="text-center mt-4">
+        <h1>Productos</h1>
+    </div>
+    <div class="row mt-4">
+        {% for p in productos %}
+        <div class="col-6 col-md-3 mt-3">
+            <div class="card border-success h-100">
+                {% if p.imagen %} 
+                <img class="imagen_galeria" src="{{ p.imagen.url }}" alt="imagen producto">
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <p class="card-title">{{ p.marca }}</p>
+                    <p class="card-text flex-grow-1">{{ p.categoría }}</p>
+                    <h5 class="card-title"><strong>{{ p.nombre }}</strong></h5>
+                    <h5 class="card-title">${{ p.precioVenta | intcomma }} CLP</h5>
+                    <h5 class="card-title2" name="precioApi" data-precio-original="{{ p.precioVenta }}" >{{ p.precioVenta | intcomma }} USD</h5>
+                    
+                    <h5 class="card-title">{{ p.descripción }}</h5>
+                    {% if p.descripcion|length > 20 %}
+                        <a href="#" class="btn btn-link btn-sm align-self-end">Mostrar más</a>
+                    {% endif %}
+                    <a href="#" class="btn btn-primary agregar-carrito" data-producto="{{ p.id }}">Agregar al carrito</a>
+
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
