@@ -1,12 +1,15 @@
 from django.urls import path
 from .views import base, galeria,productos,marca,categoria,listar_productos,listar_marcas,\
     editar_productos,editar_marcas,eliminar_marcas,eliminar_productos,listar_categorias,\
-    editar_categorias,eliminar_categorias,home
+    editar_categorias,eliminar_categorias,home,registro
 
 urlpatterns = [
     
     path('', home, name="home"),
     path('galeria', galeria, name="galeria"),
+
+    #usuario
+    path('registro', registro, name="registro"),
 
     #administracion
     path('productos', productos, name="productos"),

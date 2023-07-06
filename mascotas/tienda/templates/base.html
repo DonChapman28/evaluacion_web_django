@@ -39,9 +39,19 @@
               </li>
             </ul>
             <form class="d-flex" role="Users">
-                <button class="btn btn-outline-dark" type="submit">Inicio Sesion</button>
-                &nbsp;
-                <button class="btn btn-outline-primary" type="submit">Registrate</button>
+              
+              {% if user.is_authenticated %}
+              <a class="nav-link active mt-2" aria-current="page" href="#">{{ user.username }}</a>
+              &nbsp;
+                <a class="btn btn-outline-dark" href="{% url 'logout' %}">cerrar sesion</a>                    
+
+              {% else %}
+              
+                <a class="btn btn-outline-dark" href="{% url 'login' %}">inicio sesion</a>
+              
+              {% endif %}  
+              &nbsp;
+              <a class="btn btn-outline-primary" href="{% url 'registro' %}">Registrate</a>
             </form>
           </div>
         </div>
