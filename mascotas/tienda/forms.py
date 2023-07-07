@@ -1,7 +1,12 @@
 from django import forms
-from .models import Producto,Marca,Categoria
-from django.contrib.auth.forms import UserCreationForm
+from .models import Producto,Marca,Categoria,User
+from django.contrib.auth.forms import UserCreationForm,UserChangeForm
 from django.contrib.auth.models import User
+
+class AgregarProductoForm(forms.Form):
+    producto = forms.ModelChoiceField(queryset=Producto.objects.all())
+    cantidad = forms.IntegerField(min_value=1)
+
 
 class ProductoForm(forms.ModelForm):
     class Meta:
@@ -55,5 +60,5 @@ class CustomUserCreationForm(UserCreationForm):
     nivel_Educacion = forms.IntegerField(widget=forms.Select(choices=opciones_educacion))
     class Meta:
         model = User
-        fields = ('rut','dv','first_name','last_name','fecha_Nacimiento','email','region','telefono','nivel_Educacion','username','password1', 'password2')
-
+        fields = ('rut','dv','first_name','last_name','fecha_Nacimiento','email','region',
+                  'telefono','nivel_Educacion','username','password1', 'password2')

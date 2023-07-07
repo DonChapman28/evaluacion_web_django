@@ -1,7 +1,9 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from .models import Producto,Marca,Categoria
-from .forms import ProductoForm,MarcaForm,CategoriaForm,CustomUserCreationForm
+from .models import Producto,Marca,Categoria,Carrito,ItemCarrito
+from .forms import ProductoForm,MarcaForm,CategoriaForm,CustomUserCreationForm,AgregarProductoForm
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
 
 # Create your views here.
@@ -164,6 +166,37 @@ def eliminar_categorias(request, id):
 
 #carrito
 
+@login_required
+def agregar_producto(request):
+    if request.method == 'POST':
+        form = AgregarProductoForm(request.POST)
+        if form.is_valid():
+            producto = form.cleaned_data['producto']
+            cantidad = form.cleaned_data['cantidad']
+            
+            carrito, created = Carrito.objects.get_or_create(usuario=request.user)
+            item, created = ItemCarrito.objects.get_or_create(carrito=carrito, producto=producto)
+            item.cantidad += cantidad
+            item.save()
+            
+            return redirect('ver_carrito')
+    else:
+        form = AgregarProductoForm()
+    
+    return render(request, 'agregar_producto.html', {'form': form})
+
+@login_required
+def ver_carrito(request):
+    carrito = Carrito.objects.get(usuario=request.user)
+    items = carrito.productos.all()
+    return render(request, 'ver_carrito.html', {'carrito': carrito, 'items': items})
+
+@login_required
+def eliminar_item_carrito(request, item_id):
+    item = get_object_or_404(ItemCarrito, id=item_id, carrito__usuario=request.user)
+    item.delete()
+    return redirect('ver_carrito')
+
 #usuarios
 
 #regsitro
@@ -181,4 +214,8 @@ def registro(request):
             return redirect(to="home")
         data["form"] = formulario
     return render(request, 'registration/registro.html', data)
+
+#carrito
+def carrito(request):
+    return render(request, 'carrito.html')
 
