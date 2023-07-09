@@ -50,206 +50,137 @@
     <div class="carrito-footer">
         <h4>Total: <span class="carrito-precio-total">0 CLP</span></h4>
         <button class="btn btn-success btn-pagar">Pagar</button>
-        <button class="btn btn-info btn-convertir-dolares">Convertir a dólares</button>
+        <button class="btn btn-info btn-convertir-dolares">USD</button>
 
     </div>
 </div>
 
 
-<style>
-    .custom-card {
-        box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3); /* Sombra de la tarjeta */
-    }
-
-    .custom-img {
-        width: 200px;
-        height: 200px;
-    }
-
-    .cream-box {
-        background-color: #FFF8E7; /* Color de fondo del recuadro crema */
-        padding: 10px;
-        box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.5); /* Sombra del recuadro */
-    }
-
-    .cream-text {
-        color: black; /* Color del texto */
-    }
-    
- 
-
-    .carrito {
-        position: fixed;
-        top: 0;
-        right: -100%;
-        width: 400px;
-        height: 100%;
-        background-color: grey;
-        padding: 20px;
-        transition: right 0.2s ease-in-out;
-    }
-
-    .carrito-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-    }
-
-    .carrito-items {
-        max-height: calc(100% - 180px);
-        overflow-y: auto;
-        margin-bottom: 20px;
-    }
-
-    .carrito-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-    }
-
-    .carrito-footer {
-        display: absolute;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .btn-cerrar {
-        background-color: #dc3545;
-        border-color: #dc3545;
-    }
-
-    .btn-cerrar:hover {
-        background-color: #c82333;
-        border-color: #bd2130;
-    }
-
-</style>
 
 <script>
-    // Variables globales
-    var carrito = [];
-    var total = 0;
+// Variables globales
+var carrito = [];
+var total = 0;
 
-    // Función para agregar un artículo al carrito
-    function agregarAlCarrito(nombre,precio) {
-        // Verificar si el artículo ya está en el carrito
-        var itemExistente = carrito.find(function(item) {
-            return item.nombre === nombre;
-        });
+// Función para agregar un artículo al carrito
+function agregarAlCarrito(nombre,precio) {
+    // Verificar si el artículo ya está en el carrito
+    var itemExistente = carrito.find(function(item) {
+        return item.nombre === nombre;
+    });
 
-        if (itemExistente) {
-            itemExistente.cantidad++;
-        } else {
-            carrito.push({ nombre: nombre, precio: precio, cantidad: 1 });
-        }
-        
-        total += precio;
+    if (itemExistente) {
+        itemExistente.cantidad++;
+    } else {
+        carrito.push({ nombre: nombre, precio: precio, cantidad: 1 });
+    }
+    
+    total += precio;
+    actualizarCarrito();
+}
+
+// Función para actualizar el carrito
+function actualizarCarrito() {
+    var carritoItems = document.querySelector('.carrito-items');
+    var carritoTotal = document.querySelector('.carrito-precio-total');
+    
+    // Vaciar el contenido actual del carrito
+    carritoItems.innerHTML = '';
+
+    // Generar el HTML para cada artículo en el carrito
+    carrito.forEach(function(item) {
+        var itemHTML = document.createElement('div');
+        itemHTML.classList.add('carrito-item');
+        itemHTML.innerHTML = `
+            <span>${item.nombre}</span>
+            <button class="btn btn-sm btn-secondary btn-restar" onclick="restarCantidad('${item.nombre}')">-</button>
+            <span>${item.cantidad}</span>
+            <button class="btn btn-sm btn-secondary btn-sumar" onclick="sumarCantidad('${item.nombre}')">+</button>
+            <span>$${item.precio}</span>
+        `;
+        carritoItems.appendChild(itemHTML);
+    });
+
+    // Actualizar el total
+    carritoTotal.textContent = `$${total} CLP`;
+}
+
+// Función para mostrar el carrito
+function mostrarCarrito() {
+    var carritoContainer = document.querySelector('.carrito');
+    carritoContainer.style.right = '0';
+}
+
+// Función para ocultar el carrito
+function ocultarCarrito() {
+    var carritoContainer = document.querySelector('.carrito');
+    carritoContainer.style.right = '-100%';
+}
+
+// Función para restar la cantidad de un artículo en el carrito
+function restarCantidad(nombre) {
+    var item = carrito.find(function(item) {
+        return item.nombre === nombre;
+    });
+
+    if (item && item.cantidad > 1) {
+        item.cantidad--;
+        total -= item.precio;
         actualizarCarrito();
     }
+}
 
-    // Función para actualizar el carrito
-    function actualizarCarrito() {
-        var carritoItems = document.querySelector('.carrito-items');
-        var carritoTotal = document.querySelector('.carrito-precio-total');
-        
-        // Vaciar el contenido actual del carrito
-        carritoItems.innerHTML = '';
-
-        // Generar el HTML para cada artículo en el carrito
-        carrito.forEach(function(item) {
-            var itemHTML = document.createElement('div');
-            itemHTML.classList.add('carrito-item');
-            itemHTML.innerHTML = `
-                <span>${item.nombre}</span>
-                <button class="btn btn-sm btn-secondary btn-restar" onclick="restarCantidad('${item.nombre}')">-</button>
-                <span>${item.cantidad}</span>
-                <button class="btn btn-sm btn-secondary btn-sumar" onclick="sumarCantidad('${item.nombre}')">+</button>
-                <span>$${item.precio}</span>
-            `;
-            carritoItems.appendChild(itemHTML);
-        });
-
-        // Actualizar el total
-        carritoTotal.textContent = `$${total} CLP`;
-    }
-
-    // Función para mostrar el carrito
-    function mostrarCarrito() {
-        var carritoContainer = document.querySelector('.carrito');
-        carritoContainer.style.right = '0';
-    }
-
-    // Función para ocultar el carrito
-    function ocultarCarrito() {
-        var carritoContainer = document.querySelector('.carrito');
-        carritoContainer.style.right = '-100%';
-    }
-
-    // Función para restar la cantidad de un artículo en el carrito
-    function restarCantidad(nombre) {
-        var item = carrito.find(function(item) {
-            return item.nombre === nombre;
-        });
-
-        if (item && item.cantidad > 1) {
-            item.cantidad--;
-            total -= item.precio;
-            actualizarCarrito();
-        }
-    }
-
-    // Función para sumar la cantidad de un artículo en el carrito
-    function sumarCantidad(nombre) {
-        var item = carrito.find(function(item) {
-            return item.nombre === nombre;
-        });
-
-        if (item) {
-            item.cantidad++;
-            total += item.precio;
-            actualizarCarrito();
-        }
-    }
-
-    // Función para convertir el total del carrito a dólares
-    function convertirADolares() {
-        // Realizar la petición a la API de conversión
-        fetch('https://mindicador.cl/api')
-            .then(response => response.json())
-            .then(data => {
-                // Obtener el valor del dólar en pesos chilenos
-                var dolarValue = data.dolar.valor;
-                
-                // Calcular el total en dólares
-                var totalDolares = total / dolarValue;
-
-                // Mostrar el total en dólares
-                var carritoTotal = document.querySelector('.carrito-precio-total');
-                carritoTotal.textContent = `$${totalDolares.toFixed(2)} USD`;
-            });
-    }
-
-    // Función para convertir el total del carrito a CLP
-
-
-    // Event listeners
-    document.addEventListener('DOMContentLoaded', function() {
-        var botonesAgregar = document.querySelectorAll('.boton-item');
-        botonesAgregar.forEach(function(boton) {
-            boton.addEventListener('click', function() {
-                var nombre = boton.getAttribute('data-nombre');
-                var precio = parseInt(boton.getAttribute('data-precio'));
-                agregarAlCarrito(nombre, precio);
-            });
-        });
-
-        var btnConvertirDolares = document.querySelector('.btn-convertir-dolares');
-        btnConvertirDolares.addEventListener('click', convertirADolares);
-
-
-
+// Función para sumar la cantidad de un artículo en el carrito
+function sumarCantidad(nombre) {
+    var item = carrito.find(function(item) {
+        return item.nombre === nombre;
     });
+
+    if (item) {
+        item.cantidad++;
+        total += item.precio;
+        actualizarCarrito();
+    }
+}
+
+// Función para convertir el total del carrito a dólares
+function convertirADolares() {
+    // Realizar la petición a la API de conversión
+    fetch('https://mindicador.cl/api')
+        .then(response => response.json())
+        .then(data => {
+            // Obtener el valor del dólar en pesos chilenos
+            var dolarValue = data.dolar.valor;
+            
+            // Calcular el total en dólares
+            var totalDolares = total / dolarValue;
+
+            // Mostrar el total en dólares
+            var carritoTotal = document.querySelector('.carrito-precio-total');
+            carritoTotal.textContent = `$${totalDolares.toFixed(2)} USD`;
+        });
+}
+
+// Función para convertir el total del carrito a CLP
+
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    var botonesAgregar = document.querySelectorAll('.boton-item');
+    botonesAgregar.forEach(function(boton) {
+        boton.addEventListener('click', function() {
+            var nombre = boton.getAttribute('data-nombre');
+            var precio = parseInt(boton.getAttribute('data-precio'));
+            agregarAlCarrito(nombre, precio);
+        });
+    });
+
+    var btnConvertirDolares = document.querySelector('.btn-convertir-dolares');
+    btnConvertirDolares.addEventListener('click', convertirADolares);
+
+
+
+});    
 </script>
+
 {% endblock %}

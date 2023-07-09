@@ -9,7 +9,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="{% static 'app/js/apiConversorDolar.js' %}"></script>
     <script src="{% static 'app/js/carrito.js' %}"></script>
+    
     <link rel="stylesheet" type="text/css" href="{% static 'app/css/estilos.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app/css/estilosCarro.css' %}">
+    
     <title>{% block tituloPestana %}{% endblock %}</title>
 </head>
 <body>
@@ -28,6 +31,7 @@
              <!--  <li class="nav-item">
                 <a class="nav-link" href="{% url 'carrito' %}">Carrito</a>
               </li> -->
+              {% if user.is_authenticated and user.is_superuser %}
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Administracion
@@ -38,6 +42,7 @@
                   <li><a class="dropdown-item" href="{% url 'productos' %}">Productos</a></li>
                 </ul>
               </li>
+              {% endif %}
             </ul>
             <form class="d-flex" role="Users">
               

@@ -41,6 +41,17 @@ class ItemCarrito(models.Model):
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField()
     # Otros campos adicionales, como precio, subtotal, etc.
+
+opciones_pago = [
+    (0, "Debito"),
+    (1, "Credito"),
+    (2, "Visa/Nacional"),
+    (3, "Visa/Internacional"),
+]
+
+class TipoPago(models.Model):
+    pago = models.IntegerField(choices=opciones_pago)
+    
     
 #user
 
